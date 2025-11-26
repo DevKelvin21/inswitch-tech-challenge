@@ -72,25 +72,16 @@ export function DataTableContainer({ config = defaultTableConfig }: DataTableCon
   const debouncedColumnFilters = useDebounce(columnFilters, 300)
 
   useEffect(() => {
-    const newSearch: Partial<DataTableSearch> = {
+    const newSearch: DataTableSearch = {
       page: pagination.pageIndex,
       pageSize: pagination.pageSize,
-    }
-
-    if (sorting.length > 0) {
-      newSearch.sort = JSON.stringify(sorting)
-    }
-
-    if (debouncedColumnFilters.length > 0) {
-      newSearch.filters = JSON.stringify(debouncedColumnFilters)
-    }
-
-    if (debouncedGlobalFilter) {
-      newSearch.search = debouncedGlobalFilter
+      sort: sorting.length > 0 ? JSON.stringify(sorting) : undefined,
+      filters: debouncedColumnFilters.length > 0 ? JSON.stringify(debouncedColumnFilters) : undefined,
+      search: debouncedGlobalFilter || undefined,
     }
 
     navigate({
-      search: (prev) => ({ ...prev, ...newSearch }),
+      search: newSearch,
       replace: true,
     })
   }, [pagination, sorting, debouncedColumnFilters, debouncedGlobalFilter, navigate])
