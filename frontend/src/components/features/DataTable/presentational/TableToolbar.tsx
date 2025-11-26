@@ -1,4 +1,4 @@
-import { Search, X, Download, RotateCcw } from 'lucide-react'
+import { Search, X, RotateCcw } from 'lucide-react'
 import type { ExportFormat } from '../../../../types/table.types'
 
 interface TableToolbarProps {
@@ -84,14 +84,12 @@ export function TableToolbar({
               onChange={(e) => {
                 if (e.target.value) {
                   onExport(e.target.value as ExportFormat)
-                  e.target.value = '' // Reset selection
+                  e.target.value = ''
                 }
               }}
-              className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
             >
-              <option value="">
-                <Download className="w-4 h-4 inline" /> Export
-              </option>
+              <option value="">Export Data</option>
               {exportFormats.includes('csv') && (
                 <option value="csv">Export as CSV</option>
               )}
