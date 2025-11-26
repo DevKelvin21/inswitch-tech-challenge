@@ -20,6 +20,7 @@ function HomePage() {
         {/* Data Table Card */}
         <Link
           to="/data-table"
+          search={{ page: 0, pageSize: 10 }}
           className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-indigo-500 hover:shadow-md transition-all"
         >
           <div>

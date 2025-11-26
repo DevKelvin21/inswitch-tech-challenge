@@ -33,6 +33,7 @@ function RootComponent() {
                 </Link>
                 <Link
                   to="/data-table"
+                  search={{ page: 0, pageSize: 10 }}
                   className="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                   activeProps={{
                     className: 'border-indigo-500 text-gray-900',
