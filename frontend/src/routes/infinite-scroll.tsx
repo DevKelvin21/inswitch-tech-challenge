@@ -1,4 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { InfiniteScrollContainer } from '../components/features/InfiniteScroll/containers/InfiniteScrollContainer'
+import { defaultScrollConfig } from '../components/features/InfiniteScroll/config/scrollConfig'
 
 export const Route = createFileRoute('/infinite-scroll')({
   component: InfiniteScrollPage,
@@ -7,16 +9,7 @@ export const Route = createFileRoute('/infinite-scroll')({
 function InfiniteScrollPage() {
   return (
     <div className="px-4 py-6 sm:px-0">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Infinite Scroll with Virtualization</h2>
-        <p className="mt-2 text-gray-600">
-          Optimized infinite scrolling with virtual windowing, search, and filters
-        </p>
-      </div>
-
-      <div className="bg-white rounded-lg shadow p-6">
-        <p className="text-gray-500">Infinite scroll implementation coming soon...</p>
-      </div>
+      <InfiniteScrollContainer config={defaultScrollConfig} />
     </div>
   )
 }
