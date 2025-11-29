@@ -29,7 +29,7 @@ export const defaultScrollConfig: InfiniteScrollConfig<Product> = {
   description: 'Browse our extensive product catalog with infinite scroll',
 
   dataSource: {
-    endpoint: 'https://6926097d26e7e41498f92830.mockapi.io/api/v1/products',
+    endpoint: '/products',
     headers: {
       'Content-Type': 'application/json',
     },

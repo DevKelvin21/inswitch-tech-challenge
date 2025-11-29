@@ -96,7 +96,7 @@ export const defaultTableConfig: TableConfig<User> = {
   ],
 
   dataSource: {
-    endpoint: 'https://6926097d26e7e41498f92830.mockapi.io/api/v1/users',
+    endpoint: '/users',
     headers: {
       'Content-Type': 'application/json',
     },

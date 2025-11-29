@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
-import { mockApiClient } from '../../../../services/mockApi'
+import { apiClient } from '../../../../services/apiClient'
 import type { FormConfig } from '../../../../types/form.types'
 import { defaultFormConfig } from '../config/formConfig'
 import { useConditionalLogic } from '../hooks/useConditionalLogic'
@@ -88,9 +88,9 @@ export function FormBuilderContainer({
   const mutation = useMutation({
     mutationFn: async (data: Record<string, unknown>) => {
       if (processedConfig.submit?.endpoint) {
-        return await mockApiClient.post(processedConfig.submit.endpoint, data)
+        return await apiClient.post(processedConfig.submit.endpoint, data)
       }
-      
+
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return data
     },

@@ -1,18 +1,17 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import type { InfiniteScrollConfig, ScrollItem, FilterState } from '../../../../types/infiniteScroll.types'
-import { mockApiClient } from '../../../../services/mockApi'
+import { apiClient } from '../../../../services/apiClient'
 
 /**
  * Hook to manage infinite scroll data fetching
  *
  * @description Wraps TanStack Query's useInfiniteQuery with project-specific logic.
- * Handles data fetching, client-side filtering, pagination, and page flattening.
+ * Handles data fetching with server-side filtering, pagination, and page flattening.
  *
  * @template T - Type of items extending ScrollItem
  * @param config - Infinite scroll configuration
  * @param filterState - Current filter state (search + filters)
- * @param filterData - Function to apply filters client-side
  *
  * @returns Object containing:
  * - allItems: Flattened array of all loaded items
@@ -29,15 +28,13 @@ import { mockApiClient } from '../../../../services/mockApi'
  * ```tsx
  * const { allItems, fetchNextPage, hasNextPage } = useInfiniteScrollData(
  *   config,
- *   filterState,
- *   filterData
+ *   filterState
  * )
  * ```
  */
 export function useInfiniteScrollData<T extends ScrollItem>(
   config: InfiniteScrollConfig<T>,
   filterState: FilterState,
-  filterData: (data: T[]) => T[]
 ) {
   const {
     data,
@@ -51,18 +48,29 @@ export function useInfiniteScrollData<T extends ScrollItem>(
   } = useInfiniteQuery({
     queryKey: ['infinite-scroll', config.id, filterState],
     queryFn: async ({ pageParam = 1 }) => {
-      const allData = await mockApiClient.get<T>(config.dataSource.endpoint)
-      const filteredData = filterData(allData)
+      const params: Record<string, unknown> = {
+        page: pageParam,
+        limit: config.pageSize,
+      }
 
-      const start = (pageParam - 1) * config.pageSize
-      const end = start + config.pageSize
-      const pageData = filteredData.slice(start, end)
+      if (filterState.search) {
+        params.search = filterState.search
+      }
+
+      Object.entries(filterState.filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== '' &&
+            !(Array.isArray(value) && value.length === 0)) {
+          params[key] = Array.isArray(value) ? value.join(',') : value
+        }
+      })
+
+      const response = await apiClient.get<T>(config.dataSource.endpoint, params)
 
       return {
-        data: pageData,
+        data: response.data,
         nextCursor: pageParam + 1,
-        hasMore: end < filteredData.length,
-        total: filteredData.length,
+        hasMore: response.meta.page < response.meta.totalPages,
+        total: response.meta.total,
       }
     },
     getNextPageParam: (lastPage) => {

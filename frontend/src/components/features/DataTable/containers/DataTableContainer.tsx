@@ -32,10 +32,6 @@ export function DataTableContainer({ config = defaultTableConfig }: DataTableCon
   const navigate = useNavigate({ from: '/data-table' })
   const searchParams = useSearch({ from: '/data-table/' }) as DataTableSearch
 
-  const { data, isLoading, isError, error, refetch } = useTableData<User>(
-    config.dataSource.endpoint
-  )
-
   const parseSortingFromURL = useCallback((sortString?: string): SortingState => {
     if (!sortString) return config.defaultSorting?.map((s) => ({ id: s.id, desc: s.desc })) ?? []
     try {
@@ -71,6 +67,25 @@ export function DataTableContainer({ config = defaultTableConfig }: DataTableCon
   const debouncedGlobalFilter = useDebounce(globalFilter, 300)
   const debouncedColumnFilters = useDebounce(columnFilters, 300)
 
+  const filterObject = useMemo(() => {
+    return columnFilters.reduce((acc, filter) => {
+      acc[filter.id] = filter.value
+      return acc
+    }, {} as Record<string, unknown>)
+  }, [columnFilters])
+
+  const { data: queryResult, isLoading, isError, error, refetch } = useTableData<User>(
+    config,
+    pagination,
+    sorting,
+    filterObject,
+    globalFilter
+  )
+
+  const data = queryResult?.data ?? []
+  const totalCount = queryResult?.totalCount ?? 0
+  const pageCount = queryResult?.pageCount ?? 0
+
   useEffect(() => {
     const newSearch: DataTableSearch = {
       page: pagination.pageIndex,
@@ -85,6 +100,7 @@ export function DataTableContainer({ config = defaultTableConfig }: DataTableCon
       replace: true,
     })
   }, [pagination, sorting, debouncedColumnFilters, debouncedGlobalFilter, navigate])
+
   const columns = useTableColumns(
     config.columns,
     config.features.selection !== false
@@ -125,10 +141,7 @@ export function DataTableContainer({ config = defaultTableConfig }: DataTableCon
   }, [refetch])
 
   const selectedCount = Object.keys(rowSelection).length
-  const totalPages = useMemo(
-    () => Math.ceil(data.length / pagination.pageSize),
-    [data.length, pagination.pageSize]
-  )
+
   if (isLoading) {
     return <LoadingSkeleton variant="table" rows={5} />
   }
@@ -146,7 +159,7 @@ export function DataTableContainer({ config = defaultTableConfig }: DataTableCon
         onClearSorting={handleClearSorting}
         onExport={exportData}
         selectedCount={selectedCount}
-        totalCount={data.length}
+        totalCount={totalCount}
         exportFormats={
           Array.isArray(config.features.export) ? config.features.export : []
         }
@@ -175,9 +188,9 @@ export function DataTableContainer({ config = defaultTableConfig }: DataTableCon
       {config.features.pagination && (
         <TablePagination
           currentPage={pagination.pageIndex}
-          totalPages={totalPages}
+          totalPages={pageCount}
           pageSize={pagination.pageSize}
-          totalRows={data.length}
+          totalRows={totalCount}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           onNextPage={handleNextPage}
