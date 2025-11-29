@@ -37,14 +37,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         message = responseObj.message || responseObj.error || message;
       }
     } else {
-      // Log non-HTTP exceptions internally for debugging
       this.logger.error(
         `Unhandled exception: ${exception instanceof Error ? exception.message : 'Unknown error'}`,
         exception instanceof Error ? exception.stack : undefined,
       );
     }
 
-    // Log all errors with request context
     this.logger.error(
       `${request.method} ${request.url} - Status: ${status} - Message: ${JSON.stringify(message)}`,
     );

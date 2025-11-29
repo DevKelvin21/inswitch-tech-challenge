@@ -12,7 +12,6 @@ export async function seedProducts(
     return;
   }
 
-  // Get all users to assign as product owners
   const users = await userRepository.find();
   if (users.length === 0) {
     console.log('⚠️  No users found, cannot seed products with owners');
@@ -24,7 +23,6 @@ export async function seedProducts(
 
   for (let i = 1; i <= 100; i++) {
     const category = categories[Math.floor(Math.random() * categories.length)];
-    // Randomly assign products to users
     const randomUser = users[Math.floor(Math.random() * users.length)];
 
     products.push({

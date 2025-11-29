@@ -20,7 +20,6 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    // Check if user already exists
     const existingUser = await this.userRepository.findOne({
       where: { email: registerDto.email },
     });
@@ -38,9 +37,7 @@ export class AuthService {
     });
 
     const savedUser = await this.userRepository.save(user);
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = savedUser;
+    const { password: _password, ...result } = savedUser;
     return result;
   }
 
@@ -72,8 +69,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
+    const { password: _password, ...result } = user;
     return result;
   }
 }

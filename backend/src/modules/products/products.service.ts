@@ -104,7 +104,6 @@ export class ProductsService {
       throw new NotFoundException(`Product #${id} not found`);
     }
 
-    // Only owner or admin can update
     if (product.createdById !== userId && userRole !== 'admin') {
       throw new ForbiddenException(
         'You do not have permission to update this product',
@@ -121,7 +120,6 @@ export class ProductsService {
       throw new NotFoundException(`Product #${id} not found`);
     }
 
-    // Only owner or admin can delete
     if (product.createdById !== userId && userRole !== 'admin') {
       throw new ForbiddenException(
         'You do not have permission to delete this product',
