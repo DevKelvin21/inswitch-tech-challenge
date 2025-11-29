@@ -1,4 +1,5 @@
 import type { TableConfig } from '../../../../types/table.types'
+export type { TableConfig } from '../../../../types/table.types'
 
 export interface User {
   id: string

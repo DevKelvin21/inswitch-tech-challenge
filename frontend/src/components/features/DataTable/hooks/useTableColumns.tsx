@@ -1,26 +1,11 @@
-import { useMemo, useRef, useEffect } from 'react'
+import { useMemo } from 'react'
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import type { User } from '../config/tableConfig'
 import type { ColumnConfig } from '../../../../types/table.types'
+import { IndeterminateCheckbox } from '../components/IndeterminateCheckbox'
 
 const columnHelper = createColumnHelper<User>()
-
-// Helper component for indeterminate checkbox
-function IndeterminateCheckbox({
-  indeterminate,
-  ...rest
-}: { indeterminate?: boolean } & React.HTMLProps<HTMLInputElement>) {
-  const ref = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (typeof indeterminate === 'boolean' && ref.current) {
-      ref.current.indeterminate = !rest.checked && indeterminate
-    }
-  }, [ref, indeterminate, rest.checked])
-
-  return <input type="checkbox" ref={ref} {...rest} />
-}
 
 /**
  * Hook to convert our config-based columns to TanStack Table column definitions
@@ -64,6 +49,7 @@ export function useTableColumns(
     // Convert config columns to TanStack columns
     configColumns.forEach((col) => {
       columns.push(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         columnHelper.accessor(col.accessorKey as any, {
           id: col.id,
           header: col.header,

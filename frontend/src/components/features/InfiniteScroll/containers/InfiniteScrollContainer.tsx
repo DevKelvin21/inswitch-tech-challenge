@@ -48,7 +48,6 @@ export function InfiniteScrollContainer<T extends ScrollItem = Product>({
     clearAll,
     hasActiveFilters,
     activeFilterCount,
-    filterData,
   } = useInfiniteScrollFilters(config.searchDebounce)
 
   const {
@@ -61,7 +60,7 @@ export function InfiniteScrollContainer<T extends ScrollItem = Product>({
     isError,
     error,
     refetch,
-  } = useInfiniteScrollData(config, filterState, filterData)
+  } = useInfiniteScrollData(config, filterState)
 
   const rowVirtualizer = useScrollVirtualizer(
     allItems,
