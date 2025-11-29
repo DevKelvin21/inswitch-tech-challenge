@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -56,8 +57,11 @@ export class ProductsController {
   @Post()
   @ApiOperation({ summary: 'Create new product (admin only)' })
   @ApiCreatedResponse({ type: ProductResponseDto })
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @Request() req: { user: { id: number } },
+  ) {
+    return this.productsService.create(createProductDto, req.user.id);
   }
 
   @ApiBearerAuth()
@@ -65,8 +69,17 @@ export class ProductsController {
   @Put(':id')
   @ApiOperation({ summary: 'Update product (admin only)' })
   @ApiOkResponse({ type: ProductResponseDto })
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @Request() req: { user: { id: number; role: string } },
+  ) {
+    return this.productsService.update(
+      +id,
+      updateProductDto,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   @ApiBearerAuth()
@@ -74,7 +87,10 @@ export class ProductsController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete product (admin only)' })
   @ApiOkResponse({ description: 'Product successfully deleted' })
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @Request() req: { user: { id: number; role: string } },
+  ) {
+    return this.productsService.remove(+id, req.user.id, req.user.role);
   }
 }

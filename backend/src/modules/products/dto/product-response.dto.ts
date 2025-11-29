@@ -1,4 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class ProductOwnerDto {
+  @ApiProperty({ example: 1, description: 'Owner user ID' })
+  id: number;
+
+  @ApiProperty({ example: 'John Doe', description: 'Owner name' })
+  name: string;
+
+  @ApiProperty({ example: 'john.doe@example.com', description: 'Owner email' })
+  email: string;
+}
 
 export class ProductResponseDto {
   @ApiProperty({ example: 1, description: 'Product ID' })
@@ -21,6 +32,18 @@ export class ProductResponseDto {
 
   @ApiProperty({ example: true, description: 'Whether product is in stock' })
   inStock: boolean;
+
+  @ApiPropertyOptional({
+    type: ProductOwnerDto,
+    description: 'Product owner/creator information',
+  })
+  createdBy?: ProductOwnerDto;
+
+  @ApiPropertyOptional({
+    example: 1,
+    description: 'ID of the user who created this product',
+  })
+  createdById?: number;
 
   @ApiProperty({
     example: '2024-01-15T10:30:00.000Z',

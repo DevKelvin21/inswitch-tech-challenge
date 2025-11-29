@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Product } from '../../products/entities/product.entity';
 
 @Entity('users')
 export class User {
@@ -36,6 +38,9 @@ export class User {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   salary: number;
+
+  @OneToMany(() => Product, (product) => product.createdBy)
+  products: Product[];
 
   @CreateDateColumn()
   createdAt: Date;

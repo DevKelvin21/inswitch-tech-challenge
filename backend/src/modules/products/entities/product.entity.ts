@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('products')
 export class Product {
@@ -28,6 +31,16 @@ export class Product {
 
   @Column({ default: true })
   inStock: boolean;
+
+  @ManyToOne(() => User, (user) => user.products, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'createdById' })
+  createdBy: User;
+
+  @Column({ nullable: true })
+  createdById: number;
 
   @CreateDateColumn()
   createdAt: Date;

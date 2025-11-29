@@ -18,7 +18,7 @@ async function runSeeds() {
   console.log('🌱 Starting database seeding...');
 
   await seedUsers(userRepository);
-  await seedProducts(productRepository);
+  await seedProducts(productRepository, userRepository);
 
   console.log('✅ Database seeding completed!');
 
